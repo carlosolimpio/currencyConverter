@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Currency Convertion</string>
+    <string name="text_header">Please choose the currency you want to convert:</string>
+    <string name="text_from">FROM:</string>
+    <string name="text_to">TO:</string>
+    <string name="button_convert">convert</string>
+    <string name="text_input">Eg.: 300</string>
+</resources>
