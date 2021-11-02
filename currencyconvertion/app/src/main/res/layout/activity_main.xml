@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/edit_text_value"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -40,13 +40,12 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_value" />
 
     <Spinner
         android:id="@+id/spinner_from"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
@@ -63,9 +62,8 @@
 
     <Spinner
         android:id="@+id/spinner_to"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/spinner_from"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView2" />
@@ -85,7 +83,6 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="300000 USD is 15000000 BRL"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="@+id/button_convert"
         app:layout_constraintStart_toStartOf="@+id/button_convert"

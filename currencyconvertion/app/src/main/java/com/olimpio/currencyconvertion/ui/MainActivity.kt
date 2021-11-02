@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import com.olimpio.currencyconvertion.databinding.ActivityMainBinding
 import com.olimpio.currencyconvertion.network.RemoteDataSource
 import com.olimpio.currencyconvertion.network.model.Currencies
@@ -19,6 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     private val currenciesList = arrayListOf<String>()
     private var convertedCurrency: Double = 0.0
+    private lateinit var to: String
+    private lateinit var from: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +30,11 @@ class MainActivity : AppCompatActivity() {
         val dataSource  = RemoteDataSource()
 
         loadCurrencies(dataSource)
-        initSpinners(currenciesList)
-
 
         binding.buttonConvert.setOnClickListener {
-            val value = binding.editTextTextPersonName.text.toString().toDouble()
+            val value = binding.editTextValue.text.toString().toDouble()
 
-            val from = binding.spinnerFrom.selectedItem.toString() // NPE
-            val to = binding.spinnerTo.selectedItem.toString()
-
-            convert(from, to, dataSource)
-
-            binding.textViewResult.text = (convertedCurrency * value).toString()
+            convert(from, to, value, dataSource)
         }
     }
 
@@ -55,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                             it.forEach { actual -> currenciesList.add(actual.value.id) }
                         }
                     }
+                    initSpinners(currenciesList)
                 }
             }
 
@@ -64,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun convert(from: String, to: String, dataSource: RemoteDataSource) {
+    private fun convert(from: String, to: String, value: Double, dataSource: RemoteDataSource) {
         dataSource.convert(from, to).enqueue(object: Callback<Map<String, Double>> {
             override fun onResponse(
                 call: Call<Map<String, Double>>,
@@ -73,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     response.body()?.let { converted ->
                         convertedCurrency = converted.values.toDoubleArray()[0]
+                        binding.textViewResult.text = String.format("%.2f", convertedCurrency * value)
                     }
                 }
             }
@@ -84,22 +81,49 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSpinners(currencyList: List<String>) {
-        val adapterSpinnerFrom = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            currencyList
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spinnerFrom.adapter = adapter
-        }
+        if (currencyList.isNotEmpty()) {
+            Log.d("olimpio", "initSpinners: NOT EMPTY")
 
-        val adapterSpinnerTo = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            currencyList
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spinnerTo.adapter = adapter
+            val spinnerFrom = binding.spinnerFrom
+            val spinnerTo = binding.spinnerTo
+
+            val adapterSpinnerFrom = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item,
+                currencyList
+            )
+
+            spinnerFrom.adapter = adapterSpinnerFrom
+            spinnerFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    Log.d("olimpio", "onItemSelected: ${currencyList[p2]}")
+                    from = currencyList[p2]
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    //TODO("Not yet implemented")
+                }
+            }
+
+            val adapterSpinnerTo = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item,
+                currencyList
+            )
+
+            spinnerTo.adapter = adapterSpinnerTo
+            spinnerTo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    Log.d("olimpio", "onItemSelected: ${currencyList[p2]}")
+                    to = currencyList[p2]
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    //TODO("Not yet implemented")
+                }
+            }
+        } else {
+            Log.d("olimpio", "initSpinners: currencyList is EMPTY")
         }
     }
 }
